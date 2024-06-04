@@ -142,6 +142,7 @@ int main()
     so->children.push_back(trig);
     so->children.push_back(rect);
     // so = trig;
+    so = SceneObject::makeBasicScene();
     do
     {
         float currentTime = glfwGetTime();

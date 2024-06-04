@@ -1,4 +1,7 @@
 #include "sceneObject.h"
+
+#include <algorithm>
+
 void SceneObject::applyMatrix(mat4x4 m)
 {
     if (!children.empty())
@@ -108,6 +111,49 @@ int SceneObject::numColors()
     return count;
 }
 
+SceneObject * SceneObject::makeBasicScene() {
+    auto* so = new SceneObject();
+    SceneObject* floor = new Rectangle(vec3(coordinateToScreen(
+        vec2(50, 15)), 0.99),
+        vec3(coordinateToScreen(vec2(0,0)), 0.99),
+        vec4(0.5, 0.5, 0.5, 0.99)
+        );
+    so->children.push_back(floor);
+    vec3 points[8];
+    points[0] = cts(15, 12.5, 10);
+    points[1] = cts(15, 12.5, 00);
+    points[2] = cts(35, 12.5, 00);
+    points[3] = cts(35, 12.5, 10);
+    points[4] = cts(15,  2.5, 10);
+    points[5] = cts(15,  2.5, 00);
+    points[6] = cts(35,  2.5, 00);
+    points[7] = cts(35,  2.5, 10);
+    SceneObject* cube = new Cuboid(points);
+    so->children.push_back(cube);
+    return so;
+}
+
+vec2 SceneObject::coordinateToScreen(vec2 inCoord) {
+    vec2 ret = vec2(inCoord);
+    ret.x = -1 + inCoord.x/50 * 2;
+    ret.y =  -1 + (17.5 + inCoord.y)/50 * 2;
+    return ret;
+}
+
+vec2 SceneObject::cts(float x, float y) {
+    return coordinateToScreen(vec2(x, y));
+}
+
+vec3 SceneObject::coordinateToScreen(vec3 inCoord) {
+    vec2 xyVec = coordinateToScreen(vec2(inCoord.x, inCoord.y));
+    vec3 ret = vec3(xyVec, 1 - inCoord.z / 50 * 2);
+    return ret;
+}
+
+vec3 SceneObject::cts(float x, float y, float z) {
+    return coordinateToScreen(vec3(x, y, z));
+}
+
 Triangle::Triangle(vec3 p1, vec3 p2, vec3 p3, vec4 color)
 {
     children = std::vector<SceneObject*>();
@@ -156,6 +202,94 @@ Rectangle::Rectangle(vec3 ur, vec3 ll, vec4 color)
     );
     children.push_back(t1);
     children.push_back(t2);
+    int n = numPoints();
+    vertices = new vec3*[n];
+    int count = 0;
+    for(SceneObject* so : children)
+    {
+        for (int j = 0; j < so->numPoints(); j++)
+        {
+            vertices[count++] = so->vertices[j];
+        }
+    }
+
+    colors = new vec4[n];
+    for (int i = 0; i < n; i++)
+    {
+        colors[i] = color;
+    }
+}
+
+Rectangle::Rectangle(vec3 ur, vec3 ul, vec3 ll, vec3 lr, vec4 color) {
+    children = std::vector<SceneObject*>();
+    children.push_back(
+        new Triangle(
+            vec3(ur),
+            vec3(ul),
+            vec3(lr)
+    ));
+    children.push_back(
+        new Triangle(
+        vec3(ul),
+        vec3(ll),
+        vec3(lr)
+    ));
+    int n = numPoints();
+    vertices = new vec3*[n];
+    int count = 0;
+    for(SceneObject* so : children)
+    {
+        for (int j = 0; j < so->numPoints(); j++)
+        {
+            vertices[count++] = so->vertices[j];
+        }
+    }
+    colors = new vec4[n];
+    for (int i = 0; i < n; i++)
+    {
+        colors[i] = color;
+    }
+}
+
+Cuboid::Cuboid(vec3 ur, vec3 ul, vec3 ll, vec3 lr, float, vec4) {
+
+}
+
+Cuboid::Cuboid(vec3 points[8], vec4 color) {
+//     std::vector<vec3> pointsVector(points, points + 8);
+// std::sort(pointsVector.begin(), pointsVector.end(), [](const vec3& a, const vec3& b) {
+//     if (a.y != b.y)
+//         return a.y < b.y;
+//     if (a.x != b.x)
+//         return a.x < b.x;
+//     return a.z > b.z;
+//     });
+//     for (int i = 0; i < 8; ++i) {
+//         points[i] =pointsVector.at(i);
+//     }
+    children = std::vector<SceneObject*>();
+    Rectangle* rectangles[8];
+    int buildOrder[6][4] = {
+        {0, 1, 2, 3},
+        {0, 3, 4, 7},
+        {0, 1, 5, 4},
+        {6, 5, 4, 7},
+        {6, 2, 3, 7},
+        {6, 2, 1, 5},
+    };
+    for (int i = 0; i < 6; ++i) {
+        vec3 vecs[4];
+        for (int j = 0; j < 4; ++j) {
+            vecs[j] = points[buildOrder[i][j]];
+        }
+        children.push_back(new Rectangle(
+            vecs[0],
+            vecs[1],
+            vecs[2],
+            vecs[3],
+            color
+        ));
+    }
     int n = numPoints();
     vertices = new vec3*[n];
     int count = 0;

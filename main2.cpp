@@ -18,14 +18,13 @@
 
 using namespace glm;
 using namespace std;
-
-int main(){
+void testSceneObjectBasics(){
     Triangle* trig = new Triangle(
-        vec3(0, 0.4, 0), 
-        vec3(-0.2, 0.2, 0), 
-        vec3(0.2, 0.2, 0),
-        vec4(1.0f, 1.0f, 0.0f, 1.0f)
-        );
+            vec3(0, 0.4, 0),
+            vec3(-0.2, 0.2, 0),
+            vec3(0.2, 0.2, 0),
+            vec4(1.0f, 1.0f, 0.0f, 1.0f)
+            );
     Rectangle* rect = new Rectangle(
         vec3(-0.2, 0.2, 0),
         vec3(0.2, 0.2, 0),
@@ -55,6 +54,18 @@ int main(){
         }
         cout << endl;
     }
-    
-    
+}
+int main(){
+    SceneObject* cube = SceneObject::makeBasicScene()->children.at(1);
+    // float* v = cube->toVertexArray();
+    // int vCount = 0;
+    // for (int i = 0; i < cube->numPoints(); i++)
+    // {
+    //     cout << "i: " << i << endl;
+    //     for (int i = 0; i < 3; i++)
+    //     {
+    //         cout << v[vCount++] << "\t";
+    //     }
+    //     cout << endl;
+    // }
 }
