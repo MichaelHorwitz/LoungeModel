@@ -8,6 +8,8 @@ constexpr vec4 black = vec4(5 / 255.0, 5 / 255.0, 5 / 255.0, 1);
 constexpr vec4 white = vec4(240 / 255.0, 240 / 255.0, 240 / 255.0, 1);
 constexpr vec4 floorgrey = vec4(60 / 255.0, 55 / 255.0, 55 / 255.0, 1);
 constexpr vec4 yellow = vec4(200 / 255.0, 200 / 255.0, 50 / 255.0, 1);
+constexpr vec4 brown = vec4(71 / 255.0, 58 / 255.0, 48 / 255.0, 1);
+
 void SceneObject::applyMatrix(mat4x4 m)
 {
     if (!children.empty())
@@ -255,6 +257,10 @@ void SceneObject::addChairs()
         12,
         blue
     ));
+
+    for (int i = 0; i < 4; ++i) {
+        this->children.push_back(new TubChair(vec2(10.25+0.75/2, 5.5 + 0.75/2 + i * 1.05)));
+    }
 }
 
 void SceneObject::addTables() {
@@ -485,9 +491,6 @@ Cylinder::Cylinder(vec3 origin, float height, float radius, int numTriangles, ve
     children = std::vector<SceneObject *>();
     std::vector<vec3> points;
     float angleStep = 2 * M_PI / numTriangles;
-    std::cout << "origin: " << printVec3(origin);
-    std::cout << "height: " << height;
-    std::cout << "radius: " << radius;
     for (int i = 0; i < numTriangles; i++)
     {
         vec3 point;
@@ -556,4 +559,41 @@ BigTable::BigTable(vec2 origin)
         cts(origin.x - (tableWidth/2 - legSize/2) - legSize/2, origin.y - (tableHeight/2 - legSize/2) - legSize/2, 1),
         black));
 
+}
+
+TubChair::TubChair(vec2 origin, Facing facing) {
+    children = std::vector<SceneObject *>();
+    constexpr float baseWidth = 0.75;
+    constexpr float baseHeight = 0.35;
+    constexpr float heightFromFloor = 0.15;
+    children.push_back(new Cuboid(
+        cts(origin.x + baseWidth/2, origin.y + baseWidth/2, heightFromFloor + baseHeight),
+        cts(origin.x - baseWidth/2, origin.y - baseWidth/2, heightFromFloor),
+        brown
+    ));
+    if (facing == Facing::RIGHT) {
+        vec2 sideOrigin = vec2(origin.x - (baseWidth/2 - baseHeight/2), origin.y);
+    }
+    children.push_back(new Cuboid(
+        cts(sideOrigin.x + baseHeight/2, sideOrigin.y + baseWidth/2, heightFromFloor + baseHeight + baseWidth),
+        cts(sideOrigin.x - baseHeight/2, sideOrigin.y - baseWidth/2, heightFromFloor + baseHeight),
+        brown
+    ));
+    constexpr float legSize = 0.05;
+    children.push_back(new Cuboid(
+        cts(origin.x + baseWidth/2 - legSize/2 + legSize/2, origin.y + baseWidth/2 - legSize/2 + legSize/2, 0),
+        cts(origin.x + baseWidth/2 - legSize/2 - legSize/2, origin.y + baseWidth/2 - legSize/2 - legSize/2, heightFromFloor),
+        black));
+    children.push_back(new Cuboid(
+        cts(origin.x + baseWidth/2 - legSize/2 + legSize/2, origin.y - (baseWidth/2 - legSize/2) + legSize/2, 0),
+        cts(origin.x + baseWidth/2 - legSize/2 - legSize/2, origin.y - (baseWidth/2 - legSize/2) - legSize/2, heightFromFloor),
+        black));
+    children.push_back(new Cuboid(
+        cts(origin.x - (baseWidth/2 - legSize/2) + legSize/2, origin.y + baseWidth/2 - legSize/2 + legSize/2, 0),
+        cts(origin.x - (baseWidth/2 - legSize/2) - legSize/2, origin.y + baseWidth/2 - legSize/2 - legSize/2, heightFromFloor),
+        black));
+    children.push_back(new Cuboid(
+        cts(origin.x - (baseWidth/2 - legSize/2) + legSize/2, origin.y - (baseWidth/2 - legSize/2) + legSize/2, 0),
+        cts(origin.x - (baseWidth/2 - legSize/2) - legSize/2, origin.y - (baseWidth/2 - legSize/2) - legSize/2, heightFromFloor),
+        black));
 }

@@ -65,6 +65,16 @@ struct Cylinder : public SceneObject {
 struct BigTable : public SceneObject {
     BigTable(vec2);
 };
+struct TubChair : public SceneObject {
+public:
+    enum Facing {
+        UP,
+        DOWN,
+        LEFT,
+        RIGHT,
+    };
+    TubChair(vec2, Facing = Facing::RIGHT);
+};
 
 
 #endif /*SHAPES_H*/
