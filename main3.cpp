@@ -37,43 +37,78 @@ const char *getError()
     return errorDescription;
 }
 
+bool leftMouseButtonPressed = false;
+
 void mouse_callback(GLFWwindow *window, double xposIn, double yposIn)
 {
-    float xpos = static_cast<float>(xposIn);
-    float ypos = static_cast<float>(yposIn);
+    // // Get window size
+    // int width, height;
+    // glfwGetWindowSize(window, &width, &height);
 
-    if (firstMouse)
+    // // Center position
+    // double centerX = width / 2.0;
+    // double centerY = height / 2.0;
+
+    // // Calculate offset from center
+    // double xoffset = xposIn - centerX;
+    // double yoffset = yposIn - centerY;
+
+    // // Wrap around if mouse reaches window edge
+    // if (xposIn >= width || xposIn <= 0 || yposIn >= height || yposIn <= 0)
+    // {
+    //     // Reset cursor position to the center
+    //     glfwSetCursorPos(window, centerX, centerY);
+    //     return;
+    // }
+
+    if (true)
     {
+        float xpos = static_cast<float>(xposIn);
+        float ypos = static_cast<float>(yposIn);
+
+        if (firstMouse)
+        {
+            lastX = xpos;
+            lastY = ypos;
+            firstMouse = false;
+        }
+
+        float xoffset = xpos - lastX;
+        float yoffset = lastY - ypos; // reversed since y-coordinates go from bottom to top
         lastX = xpos;
         lastY = ypos;
-        firstMouse = false;
+
+        float sensitivity = 0.03f; // change this value to your liking
+        xoffset *= sensitivity;
+        yoffset *= sensitivity;
+
+        m_yaw += xoffset;
+        m_pitch += yoffset;
+
+        // make sure that when m_pitch is out of bounds, screen doesn't get flipped
+        if (m_pitch > 89.0f)
+            m_pitch = 89.0f;
+        if (m_pitch < -89.0f)
+            m_pitch = -89.0f;
+
+        glm::vec3 front;
+        front.x = cos(glm::radians(m_yaw)) * cos(glm::radians(m_pitch));
+        front.y = sin(glm::radians(m_pitch));
+        front.z = sin(glm::radians(m_yaw)) * cos(glm::radians(m_pitch));
+        cameraFront = glm::normalize(front);
     }
-
-    float xoffset = xpos - lastX;
-    float yoffset = lastY - ypos; // reversed since y-coordinates go from bottom to top
-    lastX = xpos;
-    lastY = ypos;
-
-    float sensitivity = 0.1f; // change this value to your liking
-    xoffset *= sensitivity;
-    yoffset *= sensitivity;
-
-    m_yaw += xoffset;
-    m_pitch += yoffset;
-
-    // make sure that when m_pitch is out of bounds, screen doesn't get flipped
-    if (m_pitch > 89.0f)
-        m_pitch = 89.0f;
-    if (m_pitch < -89.0f)
-        m_pitch = -89.0f;
-
-    glm::vec3 front;
-    front.x = cos(glm::radians(m_yaw)) * cos(glm::radians(m_pitch));
-    front.y = sin(glm::radians(m_pitch));
-    front.z = sin(glm::radians(m_yaw)) * cos(glm::radians(m_pitch));
-    cameraFront = glm::normalize(front);
 }
 
+void mouse_button_callback(GLFWwindow *window, int button, int action, int mods)
+{
+    if (button == GLFW_MOUSE_BUTTON_LEFT)
+    {
+        if (action == GLFW_PRESS)
+            leftMouseButtonPressed = true;
+        else if (action == GLFW_RELEASE)
+            leftMouseButtonPressed = false;
+    }
+}
 void framebuffer_size_callback(GLFWwindow *window, int width, int height)
 {
     // make sure the viewport matches the new window dimensions; note that width and
@@ -86,7 +121,7 @@ void processInput(GLFWwindow *window)
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
 
-    float cameraSpeed = static_cast<float>(0.01 * deltaTime);
+    float cameraSpeed = static_cast<float>(0.003 * deltaTime);
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
         cameraPos += cameraSpeed * cameraFront;
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
@@ -135,6 +170,8 @@ inline GLFWwindow *setUp()
     glfwMakeContextCurrent(window); // Initialize GLEW
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
     glfwSetCursorPosCallback(window, mouse_callback);
+    glfwSetMouseButtonCallback(window, mouse_button_callback);
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);  
     startUpGLEW();
     return window;
 }
