@@ -1,5 +1,5 @@
 main: main.cpp glad.c
-	g++ -g shader.cpp sceneObject.cpp main.cpp glad.c -lglfw -pthread -lGLEW -ldl -lGL -o main
+	g++ -g shader.cpp sceneObject.cpp main3.cpp glad.c -lglfw -pthread -lGLEW -ldl -lGL -o main
 
 clean:
 	rm -f *.o main

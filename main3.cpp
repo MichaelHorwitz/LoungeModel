@@ -22,7 +22,7 @@ using namespace std;
 glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
 glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
 glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
-
+float deltaTime = 0.0f; // Time between current frame and last frame
 bool firstMouse = true;
 float m_yaw = -90.0f; // m_yaw is initialized to -90.0 degrees since a m_yaw of 0.0 results in a direction vector pointing to the right so we initially rotate a bit to the left.
 float m_pitch = 0.0f;
@@ -79,6 +79,22 @@ void framebuffer_size_callback(GLFWwindow *window, int width, int height)
     // make sure the viewport matches the new window dimensions; note that width and
     // height will be significantly larger than specified on retina displays.
     glViewport(0, 0, width, height);
+}
+
+void processInput(GLFWwindow *window)
+{
+    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+        glfwSetWindowShouldClose(window, true);
+
+    float cameraSpeed = static_cast<float>(0.01 * deltaTime);
+    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+        cameraPos += cameraSpeed * cameraFront;
+    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+        cameraPos -= cameraSpeed * cameraFront;
+    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+        cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+        cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
 }
 
 inline void startUpGLFW()
@@ -165,7 +181,7 @@ int main()
     glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
 
     // Here we compile and load the shaders. First we pass the vertex shader then the fragment shader.
-    GLuint programID = LoadShaders("vertexShader.glsl", "fragmentShader.glsl");
+    GLuint programID = LoadShaders("vertexShader2.glsl", "fragmentShader.glsl");
 
     timeDT lastChanged = chrono::steady_clock::now();
 
@@ -181,8 +197,9 @@ int main()
     do
     {
         float currentTime = glfwGetTime();
-        float deltaTime = currentTime - lastTime;
-
+        deltaTime = currentTime - lastTime;
+        processInput(window);
+        
         // Here we clear the color and depth buffer bits.
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glUseProgram(programID);
