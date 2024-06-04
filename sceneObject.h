@@ -19,9 +19,22 @@ struct SceneObject{
     virtual GLfloat* toVertexArray();
     virtual GLfloat* toColorArray();
     virtual int numPoints();
+    virtual void initVerCol(vec4 color);
+    virtual std::string printColor();
+
 
     virtual int numVertices();
     virtual int numColors();
+
+    virtual void addFloorsAndWalls();
+    virtual void addPanels();
+    static SceneObject* makeBasicScene();
+
+    static vec2 coordinateToScreen(vec2);
+    static vec2 cts(float x, float y);
+    static vec3 coordinateToScreen(vec3);
+    static vec3 cts(float x, float y, float z);
+    static std::string printVec4(vec4);
 };
 struct Triangle : public SceneObject{
     Triangle(vec3, vec3, vec3, vec4 = vec4(1.0f, 0.0f, 0.0f, 1.0f));
@@ -31,6 +44,15 @@ struct Triangle : public SceneObject{
 };
 struct Rectangle : public SceneObject{
     Rectangle(vec3, vec3, vec4 = vec4(1.0f, 0.0f, 0.0f, 1.0f));
+    Rectangle(vec3, vec3, vec3, vec3, vec4 = vec4(1.0f, 0.0f, 0.0f, 1.0f));
+};
+struct Cuboid : public SceneObject {
+    Cuboid(vec3, vec3, vec3, vec3, float, vec4 = vec4(1.0f, 0.0f, 0.0f, 1.0f));
+    Cuboid(vec3, vec3, vec4 = vec4(1.0f, 0.0f, 0.0f, 1.0f));
+    Cuboid(vec3, vec3, vec3, vec3, vec3, vec3, vec3, vec3, vec4 = vec4(1.0f, 0.0f, 0.0f, 1.0f));
+};
+struct BlueCuboidOttoman : public SceneObject {
+    BlueCuboidOttoman(vec2);
 };
 
 

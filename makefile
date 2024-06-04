@@ -2,7 +2,7 @@ main: main.cpp glad.c
 	g++ -g shader.cpp sceneObject.cpp main.cpp glad.c -lglfw -pthread -lGLEW -ldl -lGL -o main
 
 clean:
-	rm -f *.o *.txt main
+	rm -f *.o main
 
 run:
 	./main

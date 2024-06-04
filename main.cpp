@@ -11,7 +11,7 @@
 #include <glm/glm.hpp>
 
 #include "shader.hpp"
-//#include "shapes.h"
+// #include "shapes.h"
 #include "sceneObject.h"
 
 #define timeDT std::chrono::_V2::steady_clock::time_point
@@ -107,41 +107,7 @@ int main()
 
     double lastTime;
     lastTime = glfwGetTime();
-
-    // Here we create a the boxes object which consists of two boxes
-    vec3 centers[2] = {
-        vec3(0, 0, 0),
-        vec3(-0.1, -0.1, -0.1)};
-    double heights[2] = {
-        0.2,
-        0.2,
-    };
-    double widths[2] = {
-        0.2,
-        0.2,
-    };
-    double lengths[2] = {
-        0.2,
-        0.2,
-    };
-    vec3 colors[2] = {
-        vec3(0, 0, 1),
-        vec3(1, 0, 0)};
-    Triangle* trig = new Triangle(
-        vec3(0, 0.4, 0), 
-        vec3(-0.2, 0.2, 0), 
-        vec3(0.2, 0.2, 0),
-        vec4(1.0f, 1.0f, 0.0f, 1.0f)
-        );
-    Rectangle* rect = new Rectangle(
-        vec3(0.5, 0.5, 0),
-        vec3(-0.5, -0.5, 0),
-        vec4(1.0f, 0.0f, 0.0f, 1.0f)
-    );
-    SceneObject *so = new SceneObject();
-    so->children.push_back(trig);
-    so->children.push_back(rect);
-    // so = trig;
+    auto so = SceneObject::makeBasicScene();
     do
     {
         float currentTime = glfwGetTime();
@@ -154,7 +120,7 @@ int main()
         // Here we obtain the vertices and colors for the house as two dynamic arrays.
         GLfloat *vertices = so->toVertexArray();
         GLfloat *colors = so->toColorArray();
-        
+
         //  Here we bind the VBOs
         glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
         glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat[so->numVertices()]), vertices, GL_STATIC_DRAW);
@@ -195,6 +161,114 @@ int main()
         glfwPollEvents();
 
         // Reminder: The examples use GLM but for the practicals you may not use GLM and all the matrix calculations needs to be done in the application not the shaders.
+        if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+        {
+            mat4x4 translateToOrigin = mat4x4(1.0f);
+            translateToOrigin[3].x = -0.0f;
+            translateToOrigin[3].y = -0.0f;
+            translateToOrigin[3].z = -1.0f;
+
+            mat4x4 scale = mat4x4(1.0f);
+            scale[0].x *= 1.01f;
+            scale[1].y *= 1.01f;
+            scale[2].z *= 1.01f;
+
+            mat4x4 translateBack = mat4x4(1.0f);
+            translateBack[3].x = 0.0f;
+            translateBack[3].y = 0.0f;
+            translateBack[3].z = 1.0f;
+
+            so->applyMatrix(translateToOrigin);
+            so->applyMatrix(scale);
+            so->applyMatrix(translateBack);
+        }
+        if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+        {
+            mat4x4 translateToOrigin = mat4x4(1.0f);
+            translateToOrigin[3].x = -0.0f;
+            translateToOrigin[3].y = -0.0f;
+            translateToOrigin[3].z = -1.0f;
+
+            mat4x4 scale = mat4x4(1.0f);
+            scale[0].x *= 0.99f;
+            scale[1].y *= 0.99f;
+            scale[2].z *= 0.99f;
+
+            mat4x4 translateBack = mat4x4(1.0f);
+            translateBack[3].x = 0.0f;
+            translateBack[3].y = 0.0f;
+            translateBack[3].z = 1.0f;
+
+            so->applyMatrix(translateToOrigin);
+            so->applyMatrix(scale);
+            so->applyMatrix(translateBack);
+        }
+        if (glfwGetKey(window, GLFW_KEY_L) == GLFW_PRESS)
+        {
+            float angle = 0.01f; // The angle of rotation in radians
+
+            mat4x4 rotate = mat4x4(1.0f); // Initialize to identity matrix
+
+            // Set the elements of the rotation matrix
+            rotate[0].x = cos(angle);
+            rotate[0].z = sin(angle);
+            rotate[2].x = -sin(angle);
+            rotate[2].z = cos(angle);
+
+            so->applyMatrix(rotate);
+        }
+                if (glfwGetKey(window, GLFW_KEY_J) == GLFW_PRESS)
+        {
+            float angle = 0.01f; // The angle of rotation in radians
+
+            mat4x4 rotate = mat4x4(-1.0f); // Initialize to identity matrix
+
+            // Set the elements of the rotation matrix
+            rotate[0].x = cos(angle);
+            rotate[0].z = sin(angle);
+            rotate[2].x = -sin(angle);
+            rotate[2].z = cos(angle);
+
+            so->applyMatrix(rotate);
+        }
+        if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+        {
+            mat4x4 translate = mat4x4(1.0f); // Initialize to identity matrix
+
+            // Set the translation distance
+            translate[3].x -= 0.01f; // Move left
+
+            so->applyMatrix(translate);
+        }
+
+        if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+        {
+            mat4x4 translate = mat4x4(1.0f); // Initialize to identity matrix
+
+            // Set the translation distance
+            translate[3].x += 0.01f; // Move right
+
+            so->applyMatrix(translate);
+        }
+        if (glfwGetKey(window, GLFW_KEY_Y) == GLFW_PRESS)
+        {
+            mat4x4 translate = mat4x4(1.0f); // Initialize to identity matrix
+
+            // Set the translation distance
+            translate[3].y += 0.01f; // Move up
+
+            so->applyMatrix(translate);
+        }
+
+        if (glfwGetKey(window, GLFW_KEY_H) == GLFW_PRESS)
+        {
+            mat4x4 translate = mat4x4(1.0f); // Initialize to identity matrix
+
+            // Set the translation distance
+            translate[3].y -= 0.01f; // Move down
+
+            so->applyMatrix(translate);
+        }
         if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
         {
             mat4x4 rotationX = mat4x4(0.0f);
@@ -243,12 +317,41 @@ int main()
 
             so->applyMatrix(transpose(rot));
         }
+        if (glfwGetKey(window, GLFW_KEY_I) == GLFW_PRESS)
+        {
+            float angle = 0.01f; // The angle of rotation in radians
+
+            mat4x4 rotate = mat4x4(1.0f); // Initialize to identity matrix
+
+            // Set the elements of the rotation matrix
+            rotate[1].y = cos(angle);
+            rotate[1].z = -sin(angle);
+            rotate[2].y = sin(angle);
+            rotate[2].z = cos(angle);
+
+            so->applyMatrix(rotate);
+        }
+
+        if (glfwGetKey(window, GLFW_KEY_K) == GLFW_PRESS)
+        {
+            float angle = -0.01f; // The angle of rotation in radians
+
+            mat4x4 rotate = mat4x4(1.0f); // Initialize to identity matrix
+
+            // Set the elements of the rotation matrix
+            rotate[1].y = cos(angle);
+            rotate[1].z = -sin(angle);
+            rotate[2].y = sin(angle);
+            rotate[2].z = cos(angle);
+
+            so->applyMatrix(rotate);
+        }
 
         // delete[] vertices;
         // delete[] colors;
 
         lastTime = currentTime;
-        cout << "FPS: " << 1 / deltaTime << endl;
+        // cout << "FPS: " << 1 / deltaTime << endl;
 
     } while (glfwGetKey(window, GLFW_KEY_SPACE) != GLFW_PRESS &&
              glfwWindowShouldClose(window) == 0);

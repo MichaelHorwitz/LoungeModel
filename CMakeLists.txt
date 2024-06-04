@@ -8,7 +8,9 @@ find_package(GLEW REQUIRED)
 find_package(OpenGL REQUIRED)
 find_package(glfw3 3.3 REQUIRED)
 
-add_executable(main main.cpp shader.cpp sceneObject.cpp glad.c)
+add_executable(main main.cpp shader.cpp sceneObject.cpp glad.c
+        sceneObject.h
+        main2.cpp)
 target_link_libraries(main ${GLEW_LIBRARIES} glfw ${OPENGL_gl_LIBRARY} ${CMAKE_DL_LIBS})
 
 add_custom_target(run

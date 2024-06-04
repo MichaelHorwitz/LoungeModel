@@ -18,14 +18,13 @@
 
 using namespace glm;
 using namespace std;
-
-int main(){
+void testSceneObjectBasics(){
     Triangle* trig = new Triangle(
-        vec3(0, 0.4, 0), 
-        vec3(-0.2, 0.2, 0), 
-        vec3(0.2, 0.2, 0),
-        vec4(1.0f, 1.0f, 0.0f, 1.0f)
-        );
+            vec3(0, 0.4, 0),
+            vec3(-0.2, 0.2, 0),
+            vec3(0.2, 0.2, 0),
+            vec4(1.0f, 1.0f, 0.0f, 1.0f)
+            );
     Rectangle* rect = new Rectangle(
         vec3(-0.2, 0.2, 0),
         vec3(0.2, 0.2, 0),
@@ -55,6 +54,30 @@ int main(){
         }
         cout << endl;
     }
-    
-    
+}
+int main(){
+    SceneObject* so = SceneObject::makeBasicScene()->children.at(1);
+    cout << so->numPoints() << endl;
+    cout << so->numVertices() << endl;
+    cout << so->numColors() << endl;
+    int vCount = 0;
+    int cCount = 0;
+    float* v = so->toVertexArray();
+    float* c = so->toColorArray();
+
+    for (int i = 0; i < so->numPoints(); i++)
+    {
+        // cout << "i: " << i << endl;
+        for (int i = 0; i < 3; i++)
+        {
+            // cout << v[vCount++] << "\t";
+        }
+        // cout << endl;
+        for(int i = 0; i < 4; i++)
+        {
+            cout << c[cCount++] << "\t";
+        }
+        cout << endl;
+    }
+    cout << so->printColor();
 }
