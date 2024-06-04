@@ -56,16 +56,28 @@ void testSceneObjectBasics(){
     }
 }
 int main(){
-    SceneObject* cube = SceneObject::makeBasicScene()->children.at(1);
-    // float* v = cube->toVertexArray();
-    // int vCount = 0;
-    // for (int i = 0; i < cube->numPoints(); i++)
-    // {
-    //     cout << "i: " << i << endl;
-    //     for (int i = 0; i < 3; i++)
-    //     {
-    //         cout << v[vCount++] << "\t";
-    //     }
-    //     cout << endl;
-    // }
+    SceneObject* so = SceneObject::makeBasicScene()->children.at(1);
+    cout << so->numPoints() << endl;
+    cout << so->numVertices() << endl;
+    cout << so->numColors() << endl;
+    int vCount = 0;
+    int cCount = 0;
+    float* v = so->toVertexArray();
+    float* c = so->toColorArray();
+
+    for (int i = 0; i < so->numPoints(); i++)
+    {
+        // cout << "i: " << i << endl;
+        for (int i = 0; i < 3; i++)
+        {
+            // cout << v[vCount++] << "\t";
+        }
+        // cout << endl;
+        for(int i = 0; i < 4; i++)
+        {
+            cout << c[cCount++] << "\t";
+        }
+        cout << endl;
+    }
+    cout << so->printColor();
 }
