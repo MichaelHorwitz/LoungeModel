@@ -91,6 +91,24 @@ int SceneObject::numPoints()
     return count;
 }
 
+void SceneObject::initVerCol(vec4 color) {
+    int n = numPoints();
+    vertices = new vec3*[n];
+    int count = 0;
+    for(SceneObject* so : children)
+    {
+        for (int j = 0; j < so->numPoints(); j++)
+        {
+            vertices[count++] = so->vertices[j];
+        }
+    }
+    colors = new vec4[n];
+    for (int i = 0; i < n; i++)
+    {
+        colors[i] = color;
+    }
+}
+
 int SceneObject::numVertices()
 {
     int count = 0;
@@ -113,22 +131,26 @@ int SceneObject::numColors()
 
 SceneObject * SceneObject::makeBasicScene() {
     auto* so = new SceneObject();
-    SceneObject* floor = new Rectangle(vec3(coordinateToScreen(
-        vec2(50, 15)), 0.99),
-        vec3(coordinateToScreen(vec2(0,0)), 0.99),
+    SceneObject* floor = new Rectangle(
+        // vec3(coordinateToScreen(
+        // vec2(50, 15)), 0.99),
+        cts(50, 15, 0.05),
+        //vec3(coordinateToScreen(vec2(0,0)), 0.9999999999),
+        cts(0,0,0.05),
         vec4(0.5, 0.5, 0.5, 0.99)
         );
     so->children.push_back(floor);
-    vec3 points[8];
-    points[0] = cts(15, 12.5, 10);
-    points[1] = cts(15, 12.5, 00);
-    points[2] = cts(35, 12.5, 00);
-    points[3] = cts(35, 12.5, 10);
-    points[4] = cts(15,  2.5, 10);
-    points[5] = cts(15,  2.5, 00);
-    points[6] = cts(35,  2.5, 00);
-    points[7] = cts(35,  2.5, 10);
-    SceneObject* cube = new Cuboid(points);
+    SceneObject* cube = new Cuboid(
+        vec3(cts(35,    12.5,  10)), // fur
+        vec3(cts(35,    2.5,   10)), // ful
+        vec3(cts(15,    2.5,   10)), // fll
+        vec3(cts(15,    12.5,  10)), // flr
+        vec3(cts(35,    12.5,  0.1)), // bur
+        vec3(cts(35,    2.5,   0.1)), // bul
+        vec3(cts(15,    2.5,   0.1)), // bll
+        vec3(cts(15,    12.5,  0.1)), // blr
+        vec4(1, 0, 0, 1) // color
+    );
     so->children.push_back(cube);
     return so;
 }
@@ -251,59 +273,24 @@ Rectangle::Rectangle(vec3 ur, vec3 ul, vec3 ll, vec3 lr, vec4 color) {
     }
 }
 
-Cuboid::Cuboid(vec3 ur, vec3 ul, vec3 ll, vec3 lr, float, vec4) {
+Cuboid::Cuboid(vec3 ur, vec3 ul, vec3 ll, vec3 lr, float depth, vec4) {
+    Cuboid::Cuboid(vec3 ur, vec3 ul, vec3 ll, vec3 lr, float depth, vec4 color) {
+    vec3 bur(ur.x, ur.y, ur.z - depth);
+    vec3 bul(ul.x, ul.y, ul.z - depth);
+    vec3 bll(ll.x, ll.y, ll.z - depth);
+    vec3 blr(lr.x, lr.y, lr.z - depth);
 
+    *this = Cuboid(ur, ul, ll, lr, bur, bul, bll, blr, color);
+}
 }
 
-Cuboid::Cuboid(vec3 points[8], vec4 color) {
-//     std::vector<vec3> pointsVector(points, points + 8);
-// std::sort(pointsVector.begin(), pointsVector.end(), [](const vec3& a, const vec3& b) {
-//     if (a.y != b.y)
-//         return a.y < b.y;
-//     if (a.x != b.x)
-//         return a.x < b.x;
-//     return a.z > b.z;
-//     });
-//     for (int i = 0; i < 8; ++i) {
-//         points[i] =pointsVector.at(i);
-//     }
+Cuboid::Cuboid(vec3 fur, vec3 ful, vec3 fll, vec3 flr, vec3 bur, vec3 bul, vec3 bll, vec3 blr, vec4 color) {
     children = std::vector<SceneObject*>();
-    Rectangle* rectangles[8];
-    int buildOrder[6][4] = {
-        {0, 1, 2, 3},
-        {0, 3, 4, 7},
-        {0, 1, 5, 4},
-        {6, 5, 4, 7},
-        {6, 2, 3, 7},
-        {6, 2, 1, 5},
-    };
-    for (int i = 0; i < 6; ++i) {
-        vec3 vecs[4];
-        for (int j = 0; j < 4; ++j) {
-            vecs[j] = points[buildOrder[i][j]];
-        }
-        children.push_back(new Rectangle(
-            vecs[0],
-            vecs[1],
-            vecs[2],
-            vecs[3],
-            color
-        ));
-    }
-    int n = numPoints();
-    vertices = new vec3*[n];
-    int count = 0;
-    for(SceneObject* so : children)
-    {
-        for (int j = 0; j < so->numPoints(); j++)
-        {
-            vertices[count++] = so->vertices[j];
-        }
-    }
-
-    colors = new vec4[n];
-    for (int i = 0; i < n; i++)
-    {
-        colors[i] = color;
-    }
+    children.push_back(new Rectangle(fur, ful, fll, flr, color));
+    children.push_back(new Rectangle(bur, bul, bll, blr, color));
+    children.push_back(new Rectangle(fur, bur, blr, flr, color));
+    children.push_back(new Rectangle(ful, bul, bll, fll, color));
+    children.push_back(new Rectangle(fur, bur, bul, ful, color));
+    children.push_back(new Rectangle(flr, blr, bll, fll, color));
+    this->SceneObject::initVerCol(color);
 }

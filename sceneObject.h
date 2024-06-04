@@ -19,6 +19,7 @@ struct SceneObject{
     virtual GLfloat* toVertexArray();
     virtual GLfloat* toColorArray();
     virtual int numPoints();
+    virtual void initVerCol(vec4 color);
 
     virtual int numVertices();
     virtual int numColors();
@@ -41,7 +42,7 @@ struct Rectangle : public SceneObject{
 };
 struct Cuboid : public SceneObject {
     Cuboid(vec3, vec3, vec3, vec3, float, vec4 = vec4(1.0f, 0.0f, 0.0f, 1.0f));
-    Cuboid(vec3 points[8], vec4 = vec4(1.0f, 0.0f, 0.0f, 1.0f));
+    Cuboid(vec3, vec3, vec3, vec3, vec3, vec3, vec3, vec3, vec4 = vec4(1.0f, 0.0f, 0.0f, 1.0f));
 };
 
 
