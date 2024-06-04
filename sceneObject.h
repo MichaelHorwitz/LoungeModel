@@ -21,6 +21,7 @@ struct SceneObject{
     virtual int numPoints();
     virtual void initVerCol(vec4 color);
     virtual std::string printColor();
+    virtual std::string printVertices();
 
 
     virtual int numVertices();
@@ -28,13 +29,17 @@ struct SceneObject{
 
     virtual void addFloorsAndWalls();
     virtual void addPanels();
+    virtual void addChairs();
+    virtual void addTables();
     static SceneObject* makeBasicScene();
 
+    static float cts(float);
     static vec2 coordinateToScreen(vec2);
     static vec2 cts(float x, float y);
     static vec3 coordinateToScreen(vec3);
     static vec3 cts(float x, float y, float z);
     static std::string printVec4(vec4);
+    static std::string printVec3(vec3);
 };
 struct Triangle : public SceneObject{
     Triangle(vec3, vec3, vec3, vec4 = vec4(1.0f, 0.0f, 0.0f, 1.0f));
@@ -53,6 +58,12 @@ struct Cuboid : public SceneObject {
 };
 struct BlueCuboidOttoman : public SceneObject {
     BlueCuboidOttoman(vec2);
+};
+struct Cylinder : public SceneObject {
+    Cylinder(vec3, float, float, int, vec4 = vec4(1.0f, 0.0f, 0.0f, 1.0f));
+};
+struct BigTable : public SceneObject {
+    BigTable(vec2);
 };
 
 
