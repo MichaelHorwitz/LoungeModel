@@ -59,6 +59,10 @@ struct Cuboid : public SceneObject
     Cuboid(vec3, vec3, vec4 = vec4(1.0f, 0.0f, 0.0f, 1.0f));
     Cuboid(vec3, vec3, vec3, vec3, vec3, vec3, vec3, vec3, vec4 = vec4(1.0f, 0.0f, 0.0f, 1.0f));
 };
+struct OpenCuboid : public SceneObject
+{
+    OpenCuboid(vec3, vec3, vec3, vec3, vec3, vec3, vec3, vec3, vec4 = vec4(1.0f, 0.0f, 0.0f, 1.0f));
+};
 struct BlueCuboidOttoman : public SceneObject
 {
     BlueCuboidOttoman(vec2);

@@ -188,6 +188,24 @@ void SceneObject::addFloorsAndWalls()
     cts(0, 18, 14),
     cts(50, 18, 14),
     white));
+    this->children.push_back(new Rectangle(
+    cts(50, -1, 1.5),
+    cts(0, -1, 1.5),
+    cts(0, 0, 0),
+    cts(50, 0, 0),
+    white));
+    this->children.push_back(new Rectangle(
+        cts(50, 0, 3),
+        cts(0, 0, 3),
+        cts(0, -1, 1.5),
+        cts(50, -1, 1.5),
+        offWhite));
+    this->children.push_back(new Rectangle(
+    cts(50, 0, 3),
+    cts(0, 0, 3),
+    cts(0, -3, 14),
+    cts(50, -3, 14),
+    white));
 }
 void SceneObject::addPanels()
 {
@@ -491,6 +509,17 @@ Cuboid::Cuboid(vec3 fur, vec3 ful, vec3 fll, vec3 flr, vec3 bur, vec3 bul, vec3 
     {
         colors[i] = color;
     }
+}
+
+OpenCuboid::OpenCuboid(vec3 fur, vec3 ful, vec3 fll, vec3 flr, vec3 bur, vec3 bul, vec3 bll, vec3 blr, vec4 color) {
+    children = std::vector<SceneObject *>();
+    //children.push_back(new Rectangle(fur, ful, fll, flr, color));
+    children.push_back(new Rectangle(bur, bul, bll, blr, color));
+    children.push_back(new Rectangle(fur, bur, blr, flr, color));
+    children.push_back(new Rectangle(ful, bul, bll, fll, color));
+    children.push_back(new Rectangle(fur, bur, bul, ful, color));
+    children.push_back(new Rectangle(flr, blr, bll, fll, color));
+    this->initVerCol(color);
 }
 
 BlueCuboidOttoman::BlueCuboidOttoman(vec2 origin)
