@@ -1,6 +1,7 @@
 #include "sceneObject.h"
 
 #include <algorithm>
+#include "../../../../usr/include/glm/ext/matrix_transform.hpp"
 
 constexpr float floorOffset = 0.05;
 constexpr vec4 blue = vec4(55 / 255.0, 90 / 255.0, 128 / 255.0, 1);
@@ -188,6 +189,9 @@ void SceneObject::addFloorsAndWalls()
     cts(0, 18, 14),
     cts(50, 18, 14),
     white));
+    // this->children.push_back(new OpenCuboid(
+    //     cts(50, 18, )
+    // ))
     this->children.push_back(new Rectangle(
     cts(50, -1, 1.5),
     cts(0, -1, 1.5),
@@ -332,6 +336,8 @@ SceneObject *SceneObject::makeBasicScene()
     so->addPanels();
     so->addChairs();
     so->addTables();
+mat4 rotationMatrix = glm::rotate(mat4(1.0f), glm::radians(90.0f), vec3(1.0f, 0.0f, 0.0f));
+so->applyMatrix(transpose(rotationMatrix));
     return so;
 }
 
