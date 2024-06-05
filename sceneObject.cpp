@@ -269,34 +269,34 @@ void SceneObject::addChairs()
         12,
         blue));
 
-    for (int i = 0; i < 4; ++i)
-    {
-        this->children.push_back(new TubChair(vec2(10.30 + 0.75 / 2, 5.5 + 0.75 / 2 + i * 1.05)));
-    }
-    for (int i = 0; i < 4; ++i)
-    {
-        this->children.push_back(new TubChair(
-            vec2(20 - 0.75 / 2, 5.5 + 0.75 / 2 + i * 1.05),
-            TubChair::Facing::LEFT));
-    }
-    for (int i = 0; i < 3; ++i)
-    {
-        this->children.push_back(new TubChair(
-            vec2(32 + i * 1.05, 9.25 + 0.75 / 2),
-            TubChair::Facing::UP));
-    }
-    for (int i = 0; i < 4; ++i)
-    {
-        this->children.push_back(new TubChair(
-            vec2(35.5 - 0.75 / 2, 10 + 0.75 / 2 + i * 1.05),
-            TubChair::Facing::LEFT));
-    }
-    for (int i = 0; i < 3; ++i)
-    {
-        this->children.push_back(new TubChair(
-            vec2(29 - 0.75 / 2, 10 + 0.75 / 2 + i * 1.05),
-            TubChair::Facing::LEFT));
-    }
+    // for (int i = 0; i < 4; ++i)
+    // {
+    //     this->children.push_back(new TubChair(vec2(10.30 + 0.75 / 2, 5.5 + 0.75 / 2 + i * 1.05)));
+    // }
+    // for (int i = 0; i < 4; ++i)
+    // {
+    //     this->children.push_back(new TubChair(
+    //         vec2(20 - 0.75 / 2, 5.5 + 0.75 / 2 + i * 1.05),
+    //         TubChair::Facing::LEFT));
+    // }
+    // for (int i = 0; i < 3; ++i)
+    // {
+    //     this->children.push_back(new TubChair(
+    //         vec2(32 + i * 1.05, 9.25 + 0.75 / 2),
+    //         TubChair::Facing::UP));
+    // }
+    // for (int i = 0; i < 4; ++i)
+    // {
+    //     this->children.push_back(new TubChair(
+    //         vec2(35.5 - 0.75 / 2, 10 + 0.75 / 2 + i * 1.05),
+    //         TubChair::Facing::LEFT));
+    // }
+    // for (int i = 0; i < 3; ++i)
+    // {
+    //     this->children.push_back(new TubChair(
+    //         vec2(29 - 0.75 / 2, 10 + 0.75 / 2 + i * 1.05),
+    //         TubChair::Facing::LEFT));
+    // }
 }
 
 void SceneObject::addTables()
@@ -336,7 +336,7 @@ vec2 SceneObject::cts(float x, float y)
 vec3 SceneObject::coordinateToScreen(vec3 inCoord)
 {
     vec2 xyVec = coordinateToScreen(vec2(inCoord.x, inCoord.y));
-    vec3 ret = vec3(xyVec, 1 - inCoord.z / 50 * 2 - floorOffset);
+    vec3 ret = vec3(xyVec, inCoord.z / 50 * 2 - floorOffset);
     return ret;
 }
 
