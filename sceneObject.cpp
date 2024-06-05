@@ -15,6 +15,7 @@ constexpr vec4 wallBlack = vec4(15 / 255.0, 15 / 255.0, 15 / 255.0, 1);
 constexpr vec4 yellow = vec4(200 / 255.0, 200 / 255.0, 50 / 255.0, 1);
 constexpr vec4 brown = vec4(71 / 255.0, 58 / 255.0, 48 / 255.0, 1);
 constexpr vec4 glassBlue = vec4(124 / 255.0, 183 / 255.0, 194 / 255.0, 0.5);
+constexpr vec4 chairGrey = vec4(180 / 255.0, 180 / 255.0, 180 / 255.0, 1);
 
 
 void SceneObject::applyMatrix(mat4x4 m)
@@ -281,6 +282,10 @@ void SceneObject::addPanels()
         cts(36, 10, 0),
         cts(36.25, 14, 3),
         white));
+    this->children.push_back(new Cuboid(
+    cts(38, 8, 0),
+    cts(42, 8.25, 3),
+    white));
 }
 void SceneObject::addChairs()
 {
@@ -337,34 +342,34 @@ void SceneObject::addChairs()
         12,
         blue));
 
-    // for (int i = 0; i < 4; ++i)
-    // {
-    //     this->children.push_back(new TubChair(vec2(10.30 + 0.75 / 2, 5.5 + 0.75 / 2 + i * 1.05)));
-    // }
-    // for (int i = 0; i < 4; ++i)
-    // {
-    //     this->children.push_back(new TubChair(
-    //         vec2(20 - 0.75 / 2, 5.5 + 0.75 / 2 + i * 1.05),
-    //         TubChair::Facing::LEFT));
-    // }
-    // for (int i = 0; i < 3; ++i)
-    // {
-    //     this->children.push_back(new TubChair(
-    //         vec2(32 + i * 1.05, 9.25 + 0.75 / 2),
-    //         TubChair::Facing::UP));
-    // }
-    // for (int i = 0; i < 4; ++i)
-    // {
-    //     this->children.push_back(new TubChair(
-    //         vec2(35.5 - 0.75 / 2, 10 + 0.75 / 2 + i * 1.05),
-    //         TubChair::Facing::LEFT));
-    // }
-    // for (int i = 0; i < 3; ++i)
-    // {
-    //     this->children.push_back(new TubChair(
-    //         vec2(29 - 0.75 / 2, 10 + 0.75 / 2 + i * 1.05),
-    //         TubChair::Facing::LEFT));
-    // }
+    for (int i = 0; i < 4; ++i)
+    {
+        this->children.push_back(new TubChair(vec2(10.30 + 0.75 / 2, 5.5 + 0.75 / 2 + i * 1.05)));
+    }
+    for (int i = 0; i < 4; ++i)
+    {
+        this->children.push_back(new TubChair(
+            vec2(20 - 0.75 / 2, 5.5 + 0.75 / 2 + i * 1.05),
+            TubChair::Facing::LEFT));
+    }
+    for (int i = 0; i < 3; ++i)
+    {
+        this->children.push_back(new TubChair(
+            vec2(32 + i * 1.05, 9.25 + 0.75 / 2),
+            TubChair::Facing::UP));
+    }
+    for (int i = 0; i < 4; ++i)
+    {
+        this->children.push_back(new TubChair(
+            vec2(35.5 - 0.75 / 2, 10 + 0.75 / 2 + i * 1.05),
+            TubChair::Facing::LEFT));
+    }
+    for (int i = 0; i < 3; ++i)
+    {
+        this->children.push_back(new TubChair(
+            vec2(29 - 0.75 / 2, 10 + 0.75 / 2 + i * 1.05),
+            TubChair::Facing::LEFT));
+    }
 }
 void SceneObject::addTables()
 {
@@ -372,6 +377,10 @@ void SceneObject::addTables()
         vec2(25, 5.0)));
     this->children.push_back(new BigTable(
         vec2(25, 12.0)));
+    this->children.push_back(new Booth(
+        vec2(7.5,12)));
+    this->children.push_back(new Booth(
+        vec2(40, 5.5)));
 }
 SceneObject *SceneObject::makeBasicScene()
 {
@@ -380,8 +389,8 @@ SceneObject *SceneObject::makeBasicScene()
     so->addChairs();
     so->addTables();
     so->addFloorsAndWalls();
-    mat4 rotationMatrix = glm::rotate(mat4(1.0f), glm::radians(90.0f), vec3(1.0f, 0.0f, 0.0f));
-    so->applyMatrix(transpose(rotationMatrix));
+    // mat4 rotationMatrix = glm::rotate(mat4(1.0f), glm::radians(90.0f), vec3(1.0f, 0.0f, 0.0f));
+    // so->applyMatrix(transpose(rotationMatrix));
     return so;
 }
 float SceneObject::cts(float x)
@@ -683,7 +692,7 @@ TubChair::TubChair(vec2 origin, Facing facing)
     children.push_back(new Cuboid(
         cts(origin.x + baseWidth / 2, origin.y + baseWidth / 2, heightFromFloor + baseHeight),
         cts(origin.x - baseWidth / 2, origin.y - baseWidth / 2, heightFromFloor),
-        brown));
+        chairGrey));
     vec2 sideOrigin;
     if (facing == Facing::RIGHT)
     {
@@ -698,7 +707,7 @@ TubChair::TubChair(vec2 origin, Facing facing)
         children.push_back(new Cuboid(
             cts(sideOrigin.x + baseHeight / 2, sideOrigin.y + baseWidth / 2, heightFromFloor + baseHeight + baseWidth),
             cts(sideOrigin.x - baseHeight / 2, sideOrigin.y - baseWidth / 2, heightFromFloor + baseHeight),
-            brown));
+            chairGrey));
     }
     if (facing == UP)
     {
@@ -709,35 +718,73 @@ TubChair::TubChair(vec2 origin, Facing facing)
         children.push_back(new Cuboid(
             cts(sideOrigin.x + baseWidth / 2, sideOrigin.y + baseHeight / 2, heightFromFloor + baseHeight + baseWidth),
             cts(sideOrigin.x - baseWidth / 2, sideOrigin.y - baseHeight / 2, heightFromFloor + baseHeight),
-            brown));
+            chairGrey));
     }
     constexpr float legSize = 0.05;
-    children.push_back(new Cuboid(
-        cts(origin.x + baseWidth / 2 - legSize / 2 + legSize / 2, origin.y + baseWidth / 2 - legSize / 2 + legSize / 2, 0),
-        cts(origin.x + baseWidth / 2 - legSize / 2 - legSize / 2, origin.y + baseWidth / 2 - legSize / 2 - legSize / 2, heightFromFloor),
-        black));
-    children.push_back(new Cuboid(
-        cts(origin.x + baseWidth / 2 - legSize / 2 + legSize / 2, origin.y - (baseWidth / 2 - legSize / 2) + legSize / 2, 0),
-        cts(origin.x + baseWidth / 2 - legSize / 2 - legSize / 2, origin.y - (baseWidth / 2 - legSize / 2) - legSize / 2, heightFromFloor),
-        black));
-    children.push_back(new Cuboid(
-        cts(origin.x - (baseWidth / 2 - legSize / 2) + legSize / 2, origin.y + baseWidth / 2 - legSize / 2 + legSize / 2, 0),
-        cts(origin.x - (baseWidth / 2 - legSize / 2) - legSize / 2, origin.y + baseWidth / 2 - legSize / 2 - legSize / 2, heightFromFloor),
-        black));
-    children.push_back(new Cuboid(
-        cts(origin.x - (baseWidth / 2 - legSize / 2) + legSize / 2, origin.y - (baseWidth / 2 - legSize / 2) + legSize / 2, 0),
-        cts(origin.x - (baseWidth / 2 - legSize / 2) - legSize / 2, origin.y - (baseWidth / 2 - legSize / 2) - legSize / 2, heightFromFloor),
-        black));
+    // children.push_back(new Cuboid(
+    //     cts(origin.x + baseWidth / 2 - legSize / 2 + legSize / 2, origin.y + baseWidth / 2 - legSize / 2 + legSize / 2, 0),
+    //     cts(origin.x + baseWidth / 2 - legSize / 2 - legSize / 2, origin.y + baseWidth / 2 - legSize / 2 - legSize / 2, heightFromFloor),
+    //     black));
+    // children.push_back(new Cuboid(
+    //     cts(origin.x + baseWidth / 2 - legSize / 2 + legSize / 2, origin.y - (baseWidth / 2 - legSize / 2) + legSize / 2, 0),
+    //     cts(origin.x + baseWidth / 2 - legSize / 2 - legSize / 2, origin.y - (baseWidth / 2 - legSize / 2) - legSize / 2, heightFromFloor),
+    //     black));
+    // children.push_back(new Cuboid(
+    //     cts(origin.x - (baseWidth / 2 - legSize / 2) + legSize / 2, origin.y + baseWidth / 2 - legSize / 2 + legSize / 2, 0),
+    //     cts(origin.x - (baseWidth / 2 - legSize / 2) - legSize / 2, origin.y + baseWidth / 2 - legSize / 2 - legSize / 2, heightFromFloor),
+    //     black));
+    // children.push_back(new Cuboid(
+    //     cts(origin.x - (baseWidth / 2 - legSize / 2) + legSize / 2, origin.y - (baseWidth / 2 - legSize / 2) + legSize / 2, 0),
+    //     cts(origin.x - (baseWidth / 2 - legSize / 2) - legSize / 2, origin.y - (baseWidth / 2 - legSize / 2) - legSize / 2, heightFromFloor),
+    //     black));
 }
 
 Booth::Booth(vec2 origin)
 {
     children = std::vector<SceneObject *>();
-    constexpr float baseWidth = 0.75;
-    constexpr float baseHeight = 0.35;
-    constexpr float heightFromFloor = 0.15;
+    constexpr float panelWidth = 0.2;
+    constexpr float panelLength = 4;
+    constexpr float panelHeight = 2;
+    constexpr float seatFromGround = 0.5;
+    constexpr float seatHeight = 0.3;
     children.push_back(new Cuboid(
-        cts(origin.x + baseWidth / 2, origin.y + baseWidth / 2, heightFromFloor + baseHeight),
-        cts(origin.x - baseWidth / 2, origin.y - baseWidth / 2, heightFromFloor),
+        cts(origin.x + panelWidth/2, origin.y + panelLength/2, panelHeight),
+        cts(origin.x - panelWidth/2, origin.y - panelLength/2, 0),
         brown));
+    children.push_back(new Cuboid(
+        cts(origin.x + panelLength/2, origin.y + panelLength/2 + panelWidth/2, panelHeight),
+        cts(origin.x - panelLength/2, origin.y + panelLength/2 - panelWidth/2, 0),
+        brown
+    ));
+    children.push_back(new Cuboid(
+        cts(origin.x + panelLength/2, origin.y + panelWidth/2, panelHeight),
+        cts(origin.x - panelLength/2, origin.y - panelWidth/2, 0),
+        brown
+    ));
+    children.push_back(new Cuboid(
+        cts(origin.x + panelLength/2, origin.y - panelLength/2 + panelWidth/2, panelHeight),
+        cts(origin.x - panelLength/2, origin.y - panelLength/2 - panelWidth/2, 0),
+        brown
+    ));
+    children.push_back(new Cuboid(
+        cts(origin.x + panelLength/2, origin.y + panelLength/2 - panelWidth/2, seatFromGround + seatHeight),
+        cts(origin.x + panelWidth/2, origin.y + panelWidth/2, seatFromGround),
+        yellow
+    ));
+    children.push_back(new Cuboid(
+    cts(origin.x - panelLength/2, origin.y + panelLength/2 - panelWidth/2, seatFromGround + seatHeight),
+    cts(origin.x - panelWidth/2, origin.y + panelWidth/2, seatFromGround),
+    yellow
+));
+    children.push_back(new Cuboid(
+    cts(origin.x - panelLength/2, origin.y -( panelLength/2 - panelWidth/2), seatFromGround + seatHeight),
+    cts(origin.x - panelWidth/2, origin.y - panelWidth/2, seatFromGround),
+    yellow
+));
+    children.push_back(new Cuboid(
+cts(origin.x + panelLength/2, origin.y -( panelLength/2 - panelWidth/2), seatFromGround + seatHeight),
+cts(origin.x + panelWidth/2, origin.y - panelWidth/2, seatFromGround),
+yellow
+));
+
 }
