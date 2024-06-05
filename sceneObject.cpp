@@ -14,6 +14,8 @@ constexpr vec4 wallgrey = vec4(85 / 255.0, 85 / 255.0, 85 / 255.0, 1);
 constexpr vec4 wallBlack = vec4(15 / 255.0, 15 / 255.0, 15 / 255.0, 1);
 constexpr vec4 yellow = vec4(200 / 255.0, 200 / 255.0, 50 / 255.0, 1);
 constexpr vec4 brown = vec4(71 / 255.0, 58 / 255.0, 48 / 255.0, 1);
+
+constexpr vec4 grey = vec4(0.5, 0.5, 0.5, 1);
 constexpr vec4 glassBlue = vec4(124 / 255.0, 183 / 255.0, 194 / 255.0, 0.5);
 constexpr vec4 chairGrey = vec4(180 / 255.0, 180 / 255.0, 180 / 255.0, 1);
 
@@ -289,9 +291,11 @@ void SceneObject::addPanels()
 }
 void SceneObject::addChairs()
 {
+    this->children.push_back(new KioskTable(vec2(2, 7.5)));
     for (int i = 0; i < 5; ++i)
     {
         this->children.push_back(new BlueCuboidOttoman(vec2(14 + i * 7, 1)));
+        this->children.push_back(new TinyTable(vec2(14 + i * 7, 2.5)));
     }
     this->children.push_back(new Cylinder(
         cts(24, 4.5, 0.25),
@@ -609,6 +613,43 @@ BlueCuboidOttoman::BlueCuboidOttoman(vec2 origin)
 
     this->initVerCol(blue);
 }
+
+TinyTable::TinyTable(vec2 origin)
+{
+    children = std::vector < SceneObject * > ();
+    children.push_back(new Cylinder(
+        cts(origin.x, origin.y, 0.01),
+        cts(0.1),
+        cts(0.2),
+        12,
+        black));
+    children.push_back(new Cylinder(
+        cts(origin.x, origin.y, 0.11),
+        cts(0.5),
+        cts(0.05),
+        12,
+        black));
+    children.push_back(new Cylinder(
+        cts(origin.x, origin.y, 0.51),
+        cts(0.1),
+        cts(0.25),
+        12,
+        offWhite));
+}
+
+KioskTable::KioskTable(vec2 origin)
+{
+    children = std::vector<SceneObject *>();
+    children.push_back(new Cuboid(
+        cts(origin.x + 0.5, origin.y + 1, 1.2),
+        cts(origin.x - 0.5, origin.y - 1, 0),
+        black));
+    children.push_back(new Cuboid(
+        cts(origin.x + 0.5, origin.y + 1.5, 1.2),
+        cts(origin.x - 1, origin.y + 1, 0),
+        black));
+}
+
 Cylinder::Cylinder(vec3 origin, float height, float radius, int numTriangles, vec4 color)
 {
     children = std::vector<SceneObject *>();
@@ -738,6 +779,8 @@ TubChair::TubChair(vec2 origin, Facing facing)
     //     cts(origin.x - (baseWidth / 2 - legSize / 2) - legSize / 2, origin.y - (baseWidth / 2 - legSize / 2) - legSize / 2, heightFromFloor),
     //     black));
 }
+
+
 
 Booth::Booth(vec2 origin)
 {
