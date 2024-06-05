@@ -241,6 +241,7 @@ void SceneObject::addChairs()
     for (int i = 0; i < 5; ++i)
     {
         this->children.push_back(new BlueCuboidOttoman(vec2(14 + i * 7, 1)));
+        this->children.push_back(new TinyTable(vec2(14 + i * 7, 2.5)));
     }
     this->children.push_back(new Cylinder(
         cts(24, 4.5, 0.25),
@@ -556,6 +557,30 @@ BlueCuboidOttoman::BlueCuboidOttoman(vec2 origin)
 
     this->initVerCol(blue);
 }
+
+TinyTable::TinyTable(vec2 origin)
+{
+    children = std::vector < SceneObject * > ();
+    children.push_back(new Cylinder(
+        cts(origin.x, origin.y, 0.01),
+        cts(0.1),
+        cts(0.2),
+        12,
+        black));
+    children.push_back(new Cylinder(
+        cts(origin.x, origin.y, 0.11),
+        cts(0.5),
+        cts(0.05),
+        12,
+        black));
+    children.push_back(new Cylinder(
+        cts(origin.x, origin.y, 0.51),
+        cts(0.1),
+        cts(0.25),
+        12,
+        offWhite));
+}
+
 Cylinder::Cylinder(vec3 origin, float height, float radius, int numTriangles, vec4 color)
 {
     children = std::vector<SceneObject *>();
