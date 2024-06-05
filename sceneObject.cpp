@@ -393,8 +393,8 @@ SceneObject *SceneObject::makeBasicScene()
     so->addChairs();
     so->addTables();
     so->addFloorsAndWalls();
-    // mat4 rotationMatrix = glm::rotate(mat4(1.0f), glm::radians(90.0f), vec3(1.0f, 0.0f, 0.0f));
-    // so->applyMatrix(transpose(rotationMatrix));
+    mat4 rotationMatrix = glm::rotate(mat4(1.0f), glm::radians(90.0f), vec3(1.0f, 0.0f, 0.0f));
+    so->applyMatrix(transpose(rotationMatrix));
     return so;
 }
 float SceneObject::cts(float x)
@@ -762,22 +762,22 @@ TubChair::TubChair(vec2 origin, Facing facing)
             chairGrey));
     }
     constexpr float legSize = 0.05;
-    // children.push_back(new Cuboid(
-    //     cts(origin.x + baseWidth / 2 - legSize / 2 + legSize / 2, origin.y + baseWidth / 2 - legSize / 2 + legSize / 2, 0),
-    //     cts(origin.x + baseWidth / 2 - legSize / 2 - legSize / 2, origin.y + baseWidth / 2 - legSize / 2 - legSize / 2, heightFromFloor),
-    //     black));
-    // children.push_back(new Cuboid(
-    //     cts(origin.x + baseWidth / 2 - legSize / 2 + legSize / 2, origin.y - (baseWidth / 2 - legSize / 2) + legSize / 2, 0),
-    //     cts(origin.x + baseWidth / 2 - legSize / 2 - legSize / 2, origin.y - (baseWidth / 2 - legSize / 2) - legSize / 2, heightFromFloor),
-    //     black));
-    // children.push_back(new Cuboid(
-    //     cts(origin.x - (baseWidth / 2 - legSize / 2) + legSize / 2, origin.y + baseWidth / 2 - legSize / 2 + legSize / 2, 0),
-    //     cts(origin.x - (baseWidth / 2 - legSize / 2) - legSize / 2, origin.y + baseWidth / 2 - legSize / 2 - legSize / 2, heightFromFloor),
-    //     black));
-    // children.push_back(new Cuboid(
-    //     cts(origin.x - (baseWidth / 2 - legSize / 2) + legSize / 2, origin.y - (baseWidth / 2 - legSize / 2) + legSize / 2, 0),
-    //     cts(origin.x - (baseWidth / 2 - legSize / 2) - legSize / 2, origin.y - (baseWidth / 2 - legSize / 2) - legSize / 2, heightFromFloor),
-    //     black));
+    children.push_back(new Cuboid(
+        cts(origin.x + baseWidth / 2 - legSize / 2 + legSize / 2, origin.y + baseWidth / 2 - legSize / 2 + legSize / 2, 0),
+        cts(origin.x + baseWidth / 2 - legSize / 2 - legSize / 2, origin.y + baseWidth / 2 - legSize / 2 - legSize / 2, heightFromFloor),
+        black));
+    children.push_back(new Cuboid(
+        cts(origin.x + baseWidth / 2 - legSize / 2 + legSize / 2, origin.y - (baseWidth / 2 - legSize / 2) + legSize / 2, 0),
+        cts(origin.x + baseWidth / 2 - legSize / 2 - legSize / 2, origin.y - (baseWidth / 2 - legSize / 2) - legSize / 2, heightFromFloor),
+        black));
+    children.push_back(new Cuboid(
+        cts(origin.x - (baseWidth / 2 - legSize / 2) + legSize / 2, origin.y + baseWidth / 2 - legSize / 2 + legSize / 2, 0),
+        cts(origin.x - (baseWidth / 2 - legSize / 2) - legSize / 2, origin.y + baseWidth / 2 - legSize / 2 - legSize / 2, heightFromFloor),
+        black));
+    children.push_back(new Cuboid(
+        cts(origin.x - (baseWidth / 2 - legSize / 2) + legSize / 2, origin.y - (baseWidth / 2 - legSize / 2) + legSize / 2, 0),
+        cts(origin.x - (baseWidth / 2 - legSize / 2) - legSize / 2, origin.y - (baseWidth / 2 - legSize / 2) - legSize / 2, heightFromFloor),
+        black));
 }
 
 
