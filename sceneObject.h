@@ -71,7 +71,10 @@ struct TinyTable : public SceneObject
 {
     TinyTable(vec2);
 };
-
+struct KioskTable : public SceneObject
+{
+    KioskTable(vec2);
+};
 struct Cylinder : public SceneObject
 {
     Cylinder(vec3, float, float, int, vec4 = vec4(1.0f, 0.0f, 0.0f, 1.0f));
