@@ -206,6 +206,8 @@ int main()
     // Here we set the background color to a shade of gray.
     glClearColor(0.2, 0.2, 0.2, 1.0);  // Adjusted alpha value to 1.0 for full opacity
 
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS); // Changed from GL_NEAREST to GL_LESS
 
