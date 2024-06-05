@@ -219,9 +219,9 @@ int main()
         }
                 if (glfwGetKey(window, GLFW_KEY_J) == GLFW_PRESS)
         {
-            float angle = 0.01f; // The angle of rotation in radians
+            float angle = -0.01f; // The angle of rotation in radians
 
-            mat4x4 rotate = mat4x4(-1.0f); // Initialize to identity matrix
+            mat4x4 rotate = mat4x4(1.0f); // Initialize to identity matrix
 
             // Set the elements of the rotation matrix
             rotate[0].x = cos(angle);
@@ -317,7 +317,7 @@ int main()
 
             so->applyMatrix(transpose(rot));
         }
-        if (glfwGetKey(window, GLFW_KEY_I) == GLFW_PRESS)
+        if (glfwGetKey(window, GLFW_KEY_K) == GLFW_PRESS)
         {
             float angle = 0.01f; // The angle of rotation in radians
 
@@ -332,7 +332,7 @@ int main()
             so->applyMatrix(rotate);
         }
 
-        if (glfwGetKey(window, GLFW_KEY_K) == GLFW_PRESS)
+        if (glfwGetKey(window, GLFW_KEY_I) == GLFW_PRESS)
         {
             float angle = -0.01f; // The angle of rotation in radians
 
@@ -351,7 +351,7 @@ int main()
         // delete[] colors;
 
         lastTime = currentTime;
-        // cout << "FPS: " << 1 / deltaTime << endl;
+         cout << "FPS: " << 1 / deltaTime << endl;
 
     } while (glfwGetKey(window, GLFW_KEY_SPACE) != GLFW_PRESS &&
              glfwWindowShouldClose(window) == 0);

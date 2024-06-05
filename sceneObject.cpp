@@ -5,6 +5,12 @@
 constexpr float floorOffset = 0.05;
 constexpr vec4 blue = vec4(55 / 255.0, 90 / 255.0, 128 / 255.0, 1);
 constexpr vec4 black = vec4(5 / 255.0, 5 / 255.0, 5 / 255.0, 1);
+constexpr vec4 white = vec4(240 / 255.0, 240 / 255.0, 240 / 255.0, 1);
+constexpr vec4 offWhite = vec4(220 / 255.0, 220 / 255.0, 220 / 255.0, 1);
+constexpr vec4 floorgrey = vec4(60 / 255.0, 55 / 255.0, 55 / 255.0, 1);
+constexpr vec4 yellow = vec4(200 / 255.0, 200 / 255.0, 50 / 255.0, 1);
+constexpr vec4 brown = vec4(71 / 255.0, 58 / 255.0, 48 / 255.0, 1);
+
 void SceneObject::applyMatrix(mat4x4 m)
 {
     if (!children.empty())
@@ -102,7 +108,7 @@ void SceneObject::initVerCol(vec4 color)
             vertices[count++] = so->vertices[j];
         }
     }
-    std::cout << color.x << " " << color.y << " " << color.z << endl;
+    // std::cout << color.x << " " << color.y << " " << color.z << endl;
     colors = new vec4[n];
     for (int i = 0; i < n; i++)
     {
@@ -123,6 +129,22 @@ std::string SceneObject::printColor()
     }
     return ret;
 }
+
+std::string SceneObject::printVertices()
+{
+    int n = numPoints();
+    std::string ret = "";
+    for (int i = 0; i < n; ++i)
+    {
+        ret += "i: ";
+        ret += std::to_string(i);
+        ret += "\n";
+        ret += printVec3(*vertices[i]);
+        ret += "\n";
+    }
+    return ret;
+}
+
 int SceneObject::numVertices()
 {
     int count = 0;
@@ -147,11 +169,29 @@ void SceneObject::addFloorsAndWalls()
     this->children.push_back(new Rectangle(
         cts(50, 15, 0),
         cts(0, 0, 0),
-        vec4(0.5, 0.5, 0.5, 0.99)));
+        floorgrey));
+    this->children.push_back(new Rectangle(
+        cts(50, 16, 1.5),
+        cts(0, 16, 1.5),
+        cts(0, 15, 0),
+        cts(50, 15, 0),
+        white));
+    this->children.push_back(new Rectangle(
+        cts(50, 15, 3),
+        cts(0, 15, 3),
+        cts(0, 16, 1.5),
+        cts(50, 16, 1.5),
+        offWhite));
+    this->children.push_back(new Rectangle(
+    cts(50, 15, 3),
+    cts(0, 15, 3),
+    cts(0, 18, 14),
+    cts(50, 18, 14),
+    white));
 }
 void SceneObject::addPanels()
 {
-    constexpr auto white = vec4(0.9, 0.9, 0.9, 0.99);
+    constexpr auto white = vec4(0.9, 0.9, 0.9, 1);
     this->children.push_back(new Cuboid(
         cts(10, 5.5, 0),
         cts(10.25, 9.5, 3),
@@ -173,14 +213,115 @@ void SceneObject::addPanels()
         cts(36.25, 14, 3),
         white));
 }
+
+void SceneObject::addChairs()
+{
+    for (int i = 0; i < 5; ++i)
+    {
+        this->children.push_back(new BlueCuboidOttoman(vec2(14 + i * 7, 1)));
+    }
+    this->children.push_back(new Cylinder(
+        cts(24, 4.5, 0.25),
+        cts(0.5),
+        cts(0.45),
+        12,
+        blue));
+    this->children.push_back(new Cylinder(
+        cts(24, 5.5, 0.25),
+        cts(0.5),
+        cts(0.45),
+        12,
+        blue));
+    this->children.push_back(new Cylinder(
+        cts(26, 4.5, 0.25),
+        cts(0.5),
+        cts(0.45),
+        12,
+        blue));
+    this->children.push_back(new Cylinder(
+        cts(26, 5.5, 0.25),
+        cts(0.5),
+        cts(0.45),
+        12,
+        blue));
+    this->children.push_back(new Cylinder(
+        cts(24, 11.5, 0.25),
+        cts(0.5),
+        cts(0.45),
+        12,
+        blue));
+    this->children.push_back(new Cylinder(
+        cts(24, 12.5, 0.25),
+        cts(0.5),
+        cts(0.45),
+        12,
+        blue));
+    this->children.push_back(new Cylinder(
+        cts(26, 11.5, 0.25),
+        cts(0.5),
+        cts(0.45),
+        12,
+        blue));
+    this->children.push_back(new Cylinder(
+        cts(26, 12.5, 0.25),
+        cts(0.5),
+        cts(0.45),
+        12,
+        blue));
+
+    for (int i = 0; i < 4; ++i)
+    {
+        this->children.push_back(new TubChair(vec2(10.30 + 0.75 / 2, 5.5 + 0.75 / 2 + i * 1.05)));
+    }
+    for (int i = 0; i < 4; ++i)
+    {
+        this->children.push_back(new TubChair(
+            vec2(20 - 0.75 / 2, 5.5 + 0.75 / 2 + i * 1.05),
+            TubChair::Facing::LEFT));
+    }
+    for (int i = 0; i < 3; ++i)
+    {
+        this->children.push_back(new TubChair(
+            vec2(32 + i * 1.05, 9.25 + 0.75 / 2),
+            TubChair::Facing::UP));
+    }
+    for (int i = 0; i < 4; ++i)
+    {
+        this->children.push_back(new TubChair(
+            vec2(35.5 - 0.75 / 2, 10 + 0.75 / 2 + i * 1.05),
+            TubChair::Facing::LEFT));
+    }
+    for (int i = 0; i < 3; ++i)
+    {
+        this->children.push_back(new TubChair(
+            vec2(29 - 0.75 / 2, 10 + 0.75 / 2 + i * 1.05),
+            TubChair::Facing::LEFT));
+    }
+}
+
+void SceneObject::addTables()
+{
+    this->children.push_back(new BigTable(
+        vec2(25, 5.0)));
+    this->children.push_back(new BigTable(
+        vec2(25, 12.0)));
+}
+
 SceneObject *SceneObject::makeBasicScene()
 {
     auto *so = new SceneObject();
     so->addFloorsAndWalls();
     so->addPanels();
-    so->children.push_back(new BlueCuboidOttoman(vec2(8, 0.5)));
+    so->addChairs();
+    so->addTables();
     return so;
 }
+
+float SceneObject::cts(float x)
+{
+    return x / 50 * 2;
+}
+
 vec2 SceneObject::coordinateToScreen(vec2 inCoord)
 {
     vec2 ret = vec2(inCoord);
@@ -217,6 +358,17 @@ std::string SceneObject::printVec4(vec4 inVec)
     return ret;
 }
 
+std::string SceneObject::printVec3(vec3 inVec)
+{
+    std::string ret = "";
+    ret += std::to_string(inVec.x);
+    ret += "\t";
+    ret += std::to_string(inVec.y);
+    ret += "\t";
+    ret += std::to_string(inVec.z);
+    return ret;
+}
+
 Triangle::Triangle(vec3 p1, vec3 p2, vec3 p3, vec4 color)
 {
     children = std::vector<SceneObject *>();
@@ -250,35 +402,12 @@ int Triangle::numPoints()
 
 Rectangle::Rectangle(vec3 ur, vec3 ll, vec4 color)
 {
-    children = std::vector<SceneObject *>();
-    Triangle *t1 = new Triangle(
-        vec3(ur[0], ur[1], ur[2]),
-        vec3(ll[0], ur[1], ur[2]),
-        vec3(ur[0], ll[1], ur[2]),
+    *this = Rectangle(
+        ur,
+        vec3(ur.x, ll.y, ur.z),
+        ll,
+        vec3(ll.x, ur.y, ll.z),
         color);
-    Triangle *t2 = new Triangle(
-        vec3(ll[0], ll[1], ur[2]),
-        vec3(ll[0], ur[1], ur[2]),
-        vec3(ur[0], ll[1], ur[2]),
-        color);
-    children.push_back(t1);
-    children.push_back(t2);
-    int n = numPoints();
-    vertices = new vec3 *[n];
-    int count = 0;
-    for (SceneObject *so : children)
-    {
-        for (int j = 0; j < so->numPoints(); j++)
-        {
-            vertices[count++] = so->vertices[j];
-        }
-    }
-
-    colors = new vec4[n];
-    for (int i = 0; i < n; i++)
-    {
-        colors[i] = color;
-    }
 }
 
 Rectangle::Rectangle(vec3 ur, vec3 ul, vec3 ll, vec3 lr, vec4 color)
@@ -331,26 +460,20 @@ Cuboid::Cuboid(vec3 fur, vec3 bll, vec4 color)
     vec3 bur(fur.x, fur.y, bll.z);
     vec3 bul(fur.x, bll.y, bll.z);
     vec3 blr(bll.x, fur.y, bll.z);
-    std::cout << color.x << " " << color.y << " " << color.z << endl;
+    // std::cout << color.x << " " << color.y << " " << color.z << endl;
     *this = Cuboid(fur, ful, fll, flr, bur, bul, bll, blr, color);
 }
 
 Cuboid::Cuboid(vec3 fur, vec3 ful, vec3 fll, vec3 flr, vec3 bur, vec3 bul, vec3 bll, vec3 blr, vec4 color)
 {
     children = std::vector<SceneObject *>();
-    cout << "numPoints: " << numPoints() << endl;
     children.push_back(new Rectangle(fur, ful, fll, flr, color));
-    cout << "numPoints: " << numPoints() << endl;
     children.push_back(new Rectangle(bur, bul, bll, blr, color));
-    cout << "numPoints: " << numPoints() << endl;
     children.push_back(new Rectangle(fur, bur, blr, flr, color));
-    cout << "numPoints: " << numPoints() << endl;
     children.push_back(new Rectangle(ful, bul, bll, fll, color));
-    cout << "numPoints: " << numPoints() << endl;
     children.push_back(new Rectangle(fur, bur, bul, ful, color));
-    cout << "numPoints: " << numPoints() << endl;
     children.push_back(new Rectangle(flr, blr, bll, fll, color));
-    std::cout << color.x << " " << color.y << " " << color.z << endl;
+    // std::cout << color.x << " " << color.y << " " << color.z << endl;
 
     int n = numPoints();
     vertices = new vec3 *[n];
@@ -368,7 +491,6 @@ Cuboid::Cuboid(vec3 fur, vec3 ful, vec3 fll, vec3 flr, vec3 bur, vec3 bul, vec3 
     {
         colors[i] = color;
     }
-    // cout << printColor();
 }
 
 BlueCuboidOttoman::BlueCuboidOttoman(vec2 origin)
@@ -398,4 +520,145 @@ BlueCuboidOttoman::BlueCuboidOttoman(vec2 origin)
         black));
 
     this->initVerCol(blue);
+}
+Cylinder::Cylinder(vec3 origin, float height, float radius, int numTriangles, vec4 color)
+{
+    children = std::vector<SceneObject *>();
+    std::vector<vec3> points;
+    float angleStep = 2 * M_PI / numTriangles;
+    for (int i = 0; i < numTriangles; i++)
+    {
+        vec3 point;
+        point.x = origin.x + radius * cos(i * angleStep);
+        point.y = origin.y + radius * sin(i * angleStep);
+        point.z = origin.z + height / 2;
+        points.push_back(point);
+    }
+    for (int i = 0; i < points.size(); ++i)
+    {
+        int j = (i + 1) % points.size();
+        children.push_back(new Triangle(
+            vec3(points.at(i).x, points.at(i).y, points.at(i).z),
+            vec3(points.at(j).x, points.at(j).y, points.at(j).z),
+            vec3(origin.x, origin.y, origin.z + height / 2),
+            color));
+    }
+    for (int i = 0; i < points.size(); ++i)
+    {
+        int j = (i + 1) % points.size();
+        children.push_back(new Triangle(
+            vec3(points.at(i).x, points.at(i).y, points.at(i).z - height),
+            vec3(points.at(j).x, points.at(j).y, points.at(j).z - height),
+            vec3(origin.x, origin.y, origin.z - height / 2),
+            color));
+    }
+    for (int i = 0; i < points.size(); ++i)
+    {
+        int j = (i + 1) % points.size();
+        vec3 ur = vec3(points.at(i).x, points.at(i).y, points.at(i).z);
+        vec3 ll = vec3(points.at(j).x, points.at(j).y, points.at(j).z - height);
+        children.push_back(new Rectangle(
+            vec3(points.at(i).x, points.at(i).y, points.at(i).z),          // 0
+            vec3(points.at(j).x, points.at(j).y, points.at(j).z),          // 1
+            vec3(points.at(j).x, points.at(j).y, points.at(j).z - height), // 3
+            vec3(points.at(i).x, points.at(i).y, points.at(i).z - height), // 2
+            color));
+    }
+    initVerCol(color);
+}
+
+BigTable::BigTable(vec2 origin)
+{
+    children = std::vector<SceneObject *>();
+    constexpr float tableWidth = 1.5;
+    constexpr float tableHeight = 3;
+    children.push_back(new Cuboid(
+        cts(origin.x + tableWidth / 2, origin.y + tableHeight / 2, 1),
+        cts(origin.x - tableWidth / 2, origin.y - tableHeight / 2, 1.3),
+        white));
+    constexpr float legSize = 0.1;
+    children.push_back(new Cuboid(
+        cts(origin.x + tableWidth / 2 - legSize / 2 + legSize / 2, origin.y + tableHeight / 2 - legSize / 2 + legSize / 2, 0),
+        cts(origin.x + tableWidth / 2 - legSize / 2 - legSize / 2, origin.y + tableHeight / 2 - legSize / 2 - legSize / 2, 1),
+        black));
+    children.push_back(new Cuboid(
+        cts(origin.x + tableWidth / 2 - legSize / 2 + legSize / 2, origin.y - (tableHeight / 2 - legSize / 2) + legSize / 2, 0),
+        cts(origin.x + tableWidth / 2 - legSize / 2 - legSize / 2, origin.y - (tableHeight / 2 - legSize / 2) - legSize / 2, 1),
+        black));
+    children.push_back(new Cuboid(
+        cts(origin.x - (tableWidth / 2 - legSize / 2) + legSize / 2, origin.y + tableHeight / 2 - legSize / 2 + legSize / 2, 0),
+        cts(origin.x - (tableWidth / 2 - legSize / 2) - legSize / 2, origin.y + tableHeight / 2 - legSize / 2 - legSize / 2, 1),
+        black));
+    children.push_back(new Cuboid(
+        cts(origin.x - (tableWidth / 2 - legSize / 2) + legSize / 2, origin.y - (tableHeight / 2 - legSize / 2) + legSize / 2, 0),
+        cts(origin.x - (tableWidth / 2 - legSize / 2) - legSize / 2, origin.y - (tableHeight / 2 - legSize / 2) - legSize / 2, 1),
+        black));
+}
+
+TubChair::TubChair(vec2 origin, Facing facing)
+{
+    children = std::vector<SceneObject *>();
+    constexpr float baseWidth = 0.75;
+    constexpr float baseHeight = 0.35;
+    constexpr float heightFromFloor = 0.15;
+    children.push_back(new Cuboid(
+        cts(origin.x + baseWidth / 2, origin.y + baseWidth / 2, heightFromFloor + baseHeight),
+        cts(origin.x - baseWidth / 2, origin.y - baseWidth / 2, heightFromFloor),
+        brown));
+    vec2 sideOrigin;
+    if (facing == Facing::RIGHT)
+    {
+        sideOrigin = vec2(origin.x - (baseWidth / 2 - baseHeight / 2), origin.y);
+    }
+    if (facing == Facing::LEFT)
+    {
+        sideOrigin = vec2(origin.x + (baseWidth / 2 - baseHeight / 2), origin.y);
+    }
+    if (facing == Facing::RIGHT || facing == LEFT)
+    {
+        children.push_back(new Cuboid(
+            cts(sideOrigin.x + baseHeight / 2, sideOrigin.y + baseWidth / 2, heightFromFloor + baseHeight + baseWidth),
+            cts(sideOrigin.x - baseHeight / 2, sideOrigin.y - baseWidth / 2, heightFromFloor + baseHeight),
+            brown));
+    }
+    if (facing == UP)
+    {
+        sideOrigin = vec2(origin.x, origin.y - (baseWidth / 2 - baseHeight / 2));
+    }
+    if (facing == UP || facing == DOWN)
+    {
+        children.push_back(new Cuboid(
+            cts(sideOrigin.x + baseWidth / 2, sideOrigin.y + baseHeight / 2, heightFromFloor + baseHeight + baseWidth),
+            cts(sideOrigin.x - baseWidth / 2, sideOrigin.y - baseHeight / 2, heightFromFloor + baseHeight),
+            brown));
+    }
+    constexpr float legSize = 0.05;
+    children.push_back(new Cuboid(
+        cts(origin.x + baseWidth / 2 - legSize / 2 + legSize / 2, origin.y + baseWidth / 2 - legSize / 2 + legSize / 2, 0),
+        cts(origin.x + baseWidth / 2 - legSize / 2 - legSize / 2, origin.y + baseWidth / 2 - legSize / 2 - legSize / 2, heightFromFloor),
+        black));
+    children.push_back(new Cuboid(
+        cts(origin.x + baseWidth / 2 - legSize / 2 + legSize / 2, origin.y - (baseWidth / 2 - legSize / 2) + legSize / 2, 0),
+        cts(origin.x + baseWidth / 2 - legSize / 2 - legSize / 2, origin.y - (baseWidth / 2 - legSize / 2) - legSize / 2, heightFromFloor),
+        black));
+    children.push_back(new Cuboid(
+        cts(origin.x - (baseWidth / 2 - legSize / 2) + legSize / 2, origin.y + baseWidth / 2 - legSize / 2 + legSize / 2, 0),
+        cts(origin.x - (baseWidth / 2 - legSize / 2) - legSize / 2, origin.y + baseWidth / 2 - legSize / 2 - legSize / 2, heightFromFloor),
+        black));
+    children.push_back(new Cuboid(
+        cts(origin.x - (baseWidth / 2 - legSize / 2) + legSize / 2, origin.y - (baseWidth / 2 - legSize / 2) + legSize / 2, 0),
+        cts(origin.x - (baseWidth / 2 - legSize / 2) - legSize / 2, origin.y - (baseWidth / 2 - legSize / 2) - legSize / 2, heightFromFloor),
+        black));
+}
+
+Booth::Booth(vec2 origin)
+{
+    children = std::vector<SceneObject *>();
+    constexpr float baseWidth = 0.75;
+    constexpr float baseHeight = 0.35;
+    constexpr float heightFromFloor = 0.15;
+    children.push_back(new Cuboid(
+        cts(origin.x + baseWidth / 2, origin.y + baseWidth / 2, heightFromFloor + baseHeight),
+        cts(origin.x - baseWidth / 2, origin.y - baseWidth / 2, heightFromFloor),
+        brown));
 }
